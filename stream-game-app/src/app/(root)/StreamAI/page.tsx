@@ -1,9 +1,7 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
     <div>
-      <h1>hello worldddddddd</h1>
+      <h1>StreamAI</h1>
     </div>
   );
 }
