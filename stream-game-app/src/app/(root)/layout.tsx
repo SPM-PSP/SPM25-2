@@ -8,9 +8,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <Image
         src="/root_background.jpg"
         alt="Background"
-        layout="fill"
-        objectFit="cover"
-        quality={100}
+        fill={true} // 使用新的 fill 布局策略
+        style={{ objectFit: "cover" }} // 直接在 style 中设置 objectFit
         priority={true}
       />
       {/* 前景内容 */}
