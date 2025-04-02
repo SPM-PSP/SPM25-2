@@ -3,6 +3,13 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div>
+      <div>
+        <h1 className="text-white">（占位）图片轮播</h1>
+      </div>
+      <h1 className="text-white">（占位）强烈推荐</h1>
+      <div>
+        <h1 className="text-white">（占位）表格</h1>
+      </div>
       <h1 className="text-white">dashboard</h1>
 
       <ul className="mt-10">
