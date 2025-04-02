@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div>
-      <h1>StreamAI</h1>
+      <h1 className="text-white">StreamAI</h1>
     </div>
   );
 }

@@ -15,7 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       />
       {/* 前景内容 */}
       <div style={{ position: "relative", zIndex: 1 }}>
-        <h1 className="text-3xl">NavBar</h1>
+        <h1 className="text-3xl text-white">NavBar</h1>
         {children}
       </div>
     </div>

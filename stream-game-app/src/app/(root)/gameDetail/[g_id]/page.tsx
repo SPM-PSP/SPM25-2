@@ -5,7 +5,7 @@ export default function Home({ params }: { params: { g_id: string } }) {
 
   return (
     <div>
-      <h1 className="text-3xl">game detail: {g_id}</h1>
+      <h1 className="text-3xl text-white">game detail: {g_id}</h1>
     </div>
   );
 }
