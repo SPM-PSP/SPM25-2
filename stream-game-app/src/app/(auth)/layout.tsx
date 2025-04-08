@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <div style={{ position: "relative", width: "100vw", height: "100vh" }}>
       {/* 背景图片 */}
       <Image
         src="/auth_background.jpg"
