@@ -12,7 +12,7 @@ export default function Home() {
       </div>
       <h1 className="text-white">dashboard</h1>
 
-      <ul className="mt-10">
+      <ul className="mt-10 text-white">
         <li>
           <Link href="/gameDetail/1">game 1</Link>
         </li>
