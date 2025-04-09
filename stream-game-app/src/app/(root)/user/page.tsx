@@ -4,20 +4,52 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="container">
-      <h1 className="text-white">user</h1>
-      {/* 背景图片 */}
-      <Image
-        src="/head.png"
-        alt="Head"
-        width={300} // 指定宽度
-        height={300} // 指定高度
-        quality={100}
-        priority={true}
-      />
-       <button className="save-button">
-        Save
-      </button>
+    <div className="layout">
+      {/* 侧边栏 */}
+      <div className="sidebar">
+        <ul>
+          <li>游戏商城</li>
+          <li>我的收藏</li>
+          <li>排行榜</li>
+          <li>Stream AI</li>
+          <li className="account-management">账户管理</li>
+        </ul>
+      </div>
+
+      {/* 主内容区域 */}
+      <div className="content">
+        <div className="user-profile">
+  
+          {/* 头像 */}
+          <div className="avatar-container">
+            <Image
+              src="/head.png"
+              alt="Head"
+              width={150} // 指定宽度
+              height={150} // 指定高度
+              quality={100}
+              priority={true}
+            />
+          </div>
+
+          {/* 用户信息表单 */}
+          <div className="user-form">
+            <div className="form-group">
+              <label>账号</label>
+              <input type="text" value="无敌原神大王" />
+            </div>
+            <div className="form-group">
+              <label>密码</label>
+              <input type="password" value="**********" />
+            </div>
+            <div className="form-group">
+              <label>个人简介</label>
+              <input type="text" value="原来你也玩原神！！！" />
+            </div>
+            <button className="save-button">Save</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
