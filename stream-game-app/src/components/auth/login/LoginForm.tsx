@@ -1,10 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import supabase from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import useUserStore from "@/lib/useUserStore";
 
 const LoginForm = () => {
   const router = useRouter();
+  const { setUser, user } = useUserStore(); /* 记录用户状态 */
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -13,7 +15,7 @@ const LoginForm = () => {
     const email = form.elements.namedItem("email") as HTMLInputElement;
     const password = form.elements.namedItem("password") as HTMLInputElement;
 
-    // 从数据库中查询是否存在该用户名
+    // 从数据库中查询是否存在该邮箱
     const { data, error } = await supabase
       .from("user")
       .select("*")
@@ -32,12 +34,21 @@ const LoginForm = () => {
       return;
     }
 
+    setUser({
+      u_id: data.u_id,
+      email: data.email,
+      password: data.password,
+    }); /* 设置用户信息 */
     router.push("/dashboard");
   };
 
   return (
     <div className="fixed max-w-[450px] w-full h-full flex items-center justify-center">
       <div className="bg-white/50  backdrop-blur-xs p-8 rounded-[15px] shadow-[0_0_25px_rgba(255,255,255,0.6)] w-full">
+        <div className="mb-8 flex items-center justify-center">
+          <img src="/logo-login.png" alt="logo" className="w-22 h-22" />
+          <h1 className="text-3xl text-black">STREAM</h1>
+        </div>
         <form onSubmit={handleLogin}>
           <div className="mb-2 flex justify-between">
             <label htmlFor="email" className="text-l text-black">
