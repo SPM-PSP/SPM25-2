@@ -1,5 +1,5 @@
-import React from 'react';
-import './Home.css'; // 引入CSS文件
+import React from "react";
+import "./Home.css"; // 引入CSS文件
 import Image from "next/image";
 
 export default function Home() {

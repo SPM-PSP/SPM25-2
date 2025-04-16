@@ -1,5 +1,5 @@
-import React from 'react';
-import './Home.css'; // 引入CSS文件
+import React from "react";
+import "./Home.css"; // 引入CSS文件
 import Image from "next/image";
 
 export default function Home() {
@@ -19,7 +19,6 @@ export default function Home() {
       {/* 主内容区域 */}
       <div className="content">
         <div className="user-profile">
-  
           {/* 头像 */}
           <div className="avatar-container">
             <Image
@@ -36,15 +35,15 @@ export default function Home() {
           <div className="user-form">
             <div className="form-group">
               <label>账号</label>
-              <input type="text" value="无敌原神大王" />
+              <input type="text" placeholder="无敌原神大王" />
             </div>
             <div className="form-group">
               <label>密码</label>
-              <input type="password" value="**********" />
+              <input type="password" placeholder="**********" />
             </div>
             <div className="form-group">
               <label>个人简介</label>
-              <input type="text" value="原来你也玩原神！！！" />
+              <input type="text" placeholder="原来你也玩原神！！！" />
             </div>
             <button className="save-button">Save</button>
           </div>
