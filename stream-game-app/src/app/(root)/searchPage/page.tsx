@@ -28,13 +28,13 @@ const Home = () => {
                     <div className="search">
                         <div className="div5">搜索</div>
                         <div className="frame-162">
-                            <Link href="/login">
-                                <img className="logout" src="/search/logout0.svg" alt="logout" />
-                            </Link>
+                            <img className="logout" src="/search/logout0.svg" alt="logout" />
                         </div>
                     </div>
                     <div className="user">
                         <div className="sun">Sun</div>
+                        <img className="image-3" src="/search/image-30.png" alt="image 3" />
+
                     </div>
                 </div>
                 <img className="rectangle-6" src="/search/rectangle-60.png" alt="rectangle 6" />
