@@ -4,7 +4,12 @@ import { persist } from "zustand/middleware";
 const useUserStore = create(
   persist(
     (set) => ({
-      user: null,
+      user: {
+        email: "",
+        u_name: "",
+        password: "",
+        signature: "",
+      },
       setUser: (user) => set({ user }),
       logout: () => {
         // 清除本地存储中的用户数据（由 persist 自动处理）
