@@ -2,9 +2,9 @@
 import React from "react";
 import Image from "next/image";
 import useUserStore from "@/lib/useUserStore";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, redirect } from "next/navigation";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { setUser, user, logout } = useUserStore();
   const router = useRouter();
   const currentPath = usePathname(); // 返回当前路径
@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const handleLogout = () => {
     if (window.confirm("确认退出当前账户？")) {
-      logout;
+      logout();
       router.push("/login");
     }
   };
@@ -57,7 +57,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
           </div>
           {/* 右侧：用户名和通知图标 */}
           <div className="flex items-center space-x-6">
-            <span className="text-white text-2xl">{user?.email}</span>
+            <span className="text-white text-2xl">{user?.u_name}</span>
             <img
               src="/logout.png"
               alt="logout"
@@ -79,7 +79,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     )}
                     <a
                       href={item.href}
-                      className={`block w-full px-8 py-3 text-2xl transition-colors duration-200 ${
+                      className={`block w-full px-6 py-3 text-2xl transition-colors duration-200 ${
                         currentPath === item.href
                           ? "text-orange-400"
                           : "text-white"
@@ -100,4 +100,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default Layout;
+export default ProtectedLayout;

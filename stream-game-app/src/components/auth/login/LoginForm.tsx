@@ -37,6 +37,7 @@ const LoginForm = () => {
     setUser({
       u_id: data.u_id,
       email: data.email,
+      u_name: data.u_name,
       password: data.password,
     }); /* 设置用户信息 */
     router.push("/dashboard");
