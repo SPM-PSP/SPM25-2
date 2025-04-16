@@ -64,16 +64,6 @@ const getGameTableData=()=>{
 const gameArray=getGameTableData();
 
 export default function Home() {
-  //图片轮播功能(未设置样式)
-  const [currentIndex, setCurrentIndex] = useState(0);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, 3000);
-    //console.log(gameArray);
-    return () => clearInterval(timer);
-  }, []);
-  //图片轮播功能(未设置样式)
   return (
     <div>
       {/*图片轮播功能(未设置样式)*/}
@@ -82,8 +72,6 @@ export default function Home() {
         </Carousel>
       </div>
       
-      {/*图片轮播功能(未设置样式)*/}
-
       <h1 className="text-white">（占位）强烈推荐</h1>
 
       {/* 游戏推荐表格 */}
