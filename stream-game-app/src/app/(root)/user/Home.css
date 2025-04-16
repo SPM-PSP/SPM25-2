@@ -108,3 +108,35 @@
 .save-button:hover {
   background-color: #ff1493; /* 鼠标悬停时的背景颜色 */
 }
+
+/* 用户列表样式 */
+.user-list {
+  margin-top: 30px;
+  background-color: rgba(50, 50, 70, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.user-list h3 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+.user-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.user-list li {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.user-list p {
+  color: white;
+  margin: 5px 0;
+}

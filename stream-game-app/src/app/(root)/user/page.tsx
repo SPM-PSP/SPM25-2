@@ -5,17 +5,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="layout">
-      {/* 侧边栏 */}
-      <div className="sidebar">
-        <ul>
-          <li>游戏商城</li>
-          <li>我的收藏</li>
-          <li>排行榜</li>
-          <li>Stream AI</li>
-          <li className="account-management">账户管理</li>
-        </ul>
-      </div>
-
+ 
       {/* 主内容区域 */}
       <div className="content">
         <div className="user-profile">
@@ -33,8 +23,12 @@ export default function Home() {
 
           {/* 用户信息表单 */}
           <div className="user-form">
+          <div className="form-group">
+              <label>Email</label>
+              <input type="text" placeholder="无敌原神大王" />
+            </div>
             <div className="form-group">
-              <label>账号</label>
+              <label>用户名</label>
               <input type="text" placeholder="无敌原神大王" />
             </div>
             <div className="form-group">
