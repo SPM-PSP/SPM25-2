@@ -79,7 +79,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     )}
                     <a
                       href={item.href}
-                      className={`block w-full px-8 py-3 text-2xl transition-colors duration-200 ${
+                      className={`block w-full px-6 py-3 text-2xl transition-colors duration-200 ${
                         currentPath === item.href
                           ? "text-orange-400"
                           : "text-white"
