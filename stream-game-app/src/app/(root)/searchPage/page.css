@@ -157,5 +157,13 @@
     width: 153px;
     height: 33px;
 }
-
+.image-3 {
+    width: 1095px;
+    height: 272px;
+    position: absolute;
+    left: 285px;
+    top: 154px;
+    object-fit: cover;
+    aspect-ratio: 1095/272;
+}
 
