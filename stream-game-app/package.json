@@ -12,8 +12,12 @@
     "@supabase/supabase-js": "^2.49.4",
     "next": "15.2.2",
     "react": "^19.0.0",
+<<<<<<< HEAD
+    "react-dom": "^19.0.0"
+=======
     "react-dom": "^19.0.0",
     "zustand": "^5.0.3"
+>>>>>>> 76ee66a60a56a6bb71e1656e4137af3ccc2fc870
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
