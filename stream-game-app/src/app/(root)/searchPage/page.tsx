@@ -1,48 +1,89 @@
-import React from 'react';
+"use client";
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
+import { useSearchParams } from 'next/navigation';
 import './page.css';
-import Link from 'next/link';
+import supabase from '@/lib/supabase';
 
-// 定义 Home 组件，用于展示游戏详情页面
+// 定义游戏数据接口
+interface Game {
+    g_id: number;
+    g_name: string;
+    g_time: string;
+    face_img: string;
+    style: string;
+}
+
 const Home = () => {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState<Game[]>([]);
+    const searchParams = useSearchParams();
+    const [prevQuery, setPrevQuery] = useState('');
+
+    const handleSearch = useCallback(async (query: string) => {
+        setSearchResults([]);
+        if (query.trim() === '') {
+            return;
+        }
+        try {
+            const { data, error } = await supabase
+                .from('game')
+                .select('*')
+                .ilike('g_name', `%${query}%`)
+                .throwOnError();
+
+            setSearchResults(data || []);
+        } catch (error) {
+            console.error('搜索出错:', error);
+        }
+    }, []);
+
+    useEffect(() => {
+        const query = searchParams.get('query') || '';
+        if (query !== prevQuery) {
+            setSearchQuery(query);
+            setPrevQuery(query);
+            handleSearch(query);
+        }
+    }, [searchParams, handleSearch, prevQuery]);
+
     return (
         <>
             <Head>
                 <meta charSet="UTF-8" />
                 <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <title>Document</title>
+                <title>游戏搜索结果</title>
             </Head>
-            <div
-                className="serchPage"
-            >
-                <div className="header">
-                    <div className="stream">STREAM</div>
-                    <div className="nav">
-                        <Link href={'/leaderBoard'} className="div">排行榜</Link>
-                        <Link href={'/StreamAI'}  className="stream-ai">Stream AI</Link>
-                        <Link href={'/user'} className="div2" >账户管理</Link>
-                        <Link href={'/dashboard'} className="div3" >游戏商城</Link>
-                        <Link href={'/collections'} className="div4" >我的收藏</Link>
-                    </div>
-                    <div className="search">
-                        <div className="div5">搜索</div>
-                        <div className="frame-162">
-                            <img className="logout" src="/search/logout0.svg" alt="logout" />
+            <div className="searchPage">
+                <div className="search-results-container">
+                    {searchResults.map((game) => (
+                        <div key={game.g_id} className="game-item">
+                            <img
+                                src={game.face_img}
+                                alt={game.g_name}
+                                className="game-cover"
+                            />
+                            <div className="game-description">
+                                <div className="left-content">
+                                    <h3 className="game-name">{game.g_name}</h3>
+                                    <div className="style-container">
+                                        {game.style.split('，').map((styleItem, index) => (
+                                            <div key={index} className="style-box">
+                                                {styleItem}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                                <p className="game-time">{game.g_time}</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="user">
-                        <div className="sun">Sun</div>
-                        <img className="image-3" src="/search/image-30.png" alt="image 3" />
-
-                    </div>
+                    ))}
                 </div>
-                <img className="rectangle-6" src="/search/rectangle-60.png" alt="rectangle 6" />
-                <div className="rectangle-3"></div>
-                <img className="rectangle-14" src="/search/rectangle-140.png" alt="rectangle 14" />
             </div>
         </>
     );
+
 };
 
 export default Home;

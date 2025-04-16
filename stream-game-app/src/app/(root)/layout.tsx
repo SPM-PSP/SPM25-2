@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import Image from "next/image";
 import useUserStore from "@/lib/useUserStore";
 import { useRouter, usePathname } from "next/navigation";
@@ -8,7 +8,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const { setUser, user, logout } = useUserStore();
   const router = useRouter();
   const currentPath = usePathname(); // 返回当前路径
-
+  const [searchQuery, setSearchQuery] = useState('');
   // 定义导航项数据
   const navItems = [
     { label: "游戏商城", href: "/dashboard" },
@@ -24,7 +24,14 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       router.push("/login");
     }
   };
-
+  // 处理搜索提交的函数
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // 跳转到搜索结果页面，并携带搜索关键词
+      router.push(`/searchPage?query=${encodeURIComponent(searchQuery)}`);
+    }
+  };
   return (
     <div>
       {/* 背景图片 */}
@@ -49,11 +56,16 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
               />
               <span className="text-white text-2xl">STREAM</span>
             </div>
-            <input
-              type="text"
-              placeholder="搜索"
-              className="bg-white/50 text-white px-4 py-2 rounded-lg w-150"
-            />
+            {/* 添加表单和事件处理 */}
+            <form onSubmit={handleSearch} className="flex">
+              <input
+                  type="text"
+                  placeholder="搜索"
+                  className="bg-white/50 text-white px-4 py-2 rounded-lg w-150"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
           </div>
           {/* 右侧：用户名和通知图标 */}
           <div className="flex items-center space-x-6">
