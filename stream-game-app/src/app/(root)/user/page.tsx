@@ -1,8 +1,13 @@
+"use client";
 import React from "react";
 import "./Home.css"; // 引入CSS文件
+import useUserStore from "@/lib/useUserStore";
 import Image from "next/image";
 
+
+
 export default function Home() {
+  const { setUser, user, logout } = useUserStore();
   return (
     <div className="layout">
  
@@ -25,19 +30,19 @@ export default function Home() {
           <div className="user-form">
           <div className="form-group">
               <label>Email</label>
-              <input type="text" placeholder="无敌原神大王" />
+              <input type="text" placeholder={user?.email}/>
             </div>
             <div className="form-group">
               <label>用户名</label>
-              <input type="text" placeholder="无敌原神大王" />
+              <input type="text" placeholder={user?.u_name}/>
             </div>
             <div className="form-group">
               <label>密码</label>
-              <input type="password" placeholder="**********" />
+              <input type="password" placeholder={user?.password}/>
             </div>
             <div className="form-group">
               <label>个人简介</label>
-              <input type="text" placeholder="原来你也玩原神！！！" />
+              <input type="text" placeholder={user?.signature}/>
             </div>
             <button className="save-button">Save</button>
           </div>
