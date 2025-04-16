@@ -35,13 +35,13 @@ export default function Home() {
       minHeight: '100vh', // 至少占满整个视口高度
       position: 'relative' // 作为子元素绝对定位的参照
     }}>
-      {/* 页面标题 */}
-      <h1 className="text-white">StreamAI</h1>
+      {/* 页面标题 
+      <h1 className="text-white">StreamAI</h1> */}
       
       {/* 图标*/}
       <div style={{ 
         position: 'absolute',
-        top: '30px',       // 距离顶部
+        top: '0px',       // 距离顶部
         left: '50%',        // 水平居中开始位置
         transform: 'translateX(-50%)', // 精确水平居中
         textAlign: 'center',
