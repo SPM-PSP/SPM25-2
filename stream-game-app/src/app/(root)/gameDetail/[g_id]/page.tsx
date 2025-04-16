@@ -1,7 +1,7 @@
 import React from "react";
 
-export default function Home({ params }: { params: { g_id: string } }) {
-  const { g_id } = params;
+export default async function Home({ params }: { params: { g_id: string } }) {
+  const { g_id } = await params;
 
   return (
     <div>
