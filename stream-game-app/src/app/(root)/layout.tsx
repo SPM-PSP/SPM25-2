@@ -109,13 +109,11 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
             </nav>
           </div>
           {/* 可滚动内容区域 */}
-          <main className="flex-grow ml-57 h-[calc(100vh-5rem)] overflow-y-auto">
-            <div className="p-4 min-h-full">
-              <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6">
-                {children}
-              </div>
+          <div className="flex-grow ml-45 h-[calc(100vh-5rem)] overflow-y-auto">
+            <div className="min-h-full">
+              <div className="rounded-xl p-6">{children}</div>
             </div>
-          </main>
+          </div>
         </div>
       </div>
     </div>
