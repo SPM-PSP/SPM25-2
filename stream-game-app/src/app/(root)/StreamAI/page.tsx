@@ -1,119 +1,115 @@
-"use client"; // 声明这是一个客户端组件（Next.js 13+特性）
+"use client";
+import { useState, useRef, useEffect } from "react";
 
-import React, { useState } from 'react'; // 导入React和useState钩子
-import Image from 'next/image'; // 导入Next.js优化过的Image组件
+interface Message {
+  id: number;
+  content: string;
+  isAI: boolean;
+}
 
-export default function Home() {
-  // 使用useState创建状态变量inputValue和更新函数setInputValue
-  const [inputValue, setInputValue] = useState('');
+export default function ChatInterface() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * 处理输入框变化的回调函数
-   * @param event React的输入变更事件对象
-   */
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    // 更新状态为输入框的当前值
-    setInputValue(event.target.value);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  /**
-   * 处理表单提交的回调函数
-   * @param event React的表单提交事件对象
-   */
-  const handleFormSubmit = (event: React.FormEvent) => {
-    event.preventDefault(); // 阻止表单默认提交行为（页面刷新）
-    alert(`You entered: ${inputValue}`); // 弹出显示输入内容
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    // 添加用户消息
+    const userMessage: Message = {
+      id: Date.now(),
+      content: input.trim(),
+      isAI: false,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
+
+    // 模拟AI回复
+    setTimeout(() => {
+      const aiMessage: Message = {
+        id: Date.now() + 1,
+        content: "这是AI的回复内容。这是一个模拟回复，实际应用中会连接AI接口。",
+        isAI: true,
+      };
+      setMessages((prev) => [...prev, aiMessage]);
+      setIsLoading(false);
+    }, 1500);
   };
 
   return (
-    // 主容器：使用flex布局使内容垂直居中
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-      minHeight: '100vh', // 至少占满整个视口高度
-      position: 'relative' // 作为子元素绝对定位的参照
-    }}>
-      {/* 页面标题 */}
-      <h1 className="text-white">StreamAI</h1>
-      
-      {/* 图标*/}
-      <div style={{ 
-        position: 'absolute',
-        top: '80px',       // 距离顶部
-        left: '50%',        // 水平居中开始位置
-        transform: 'translateX(-50%)', // 精确水平居中
-        textAlign: 'center',
-        zIndex: 1
-      }}> 
-        {/* Next.js优化图片组件 */}
-        <Image
-          src="/StreamAI.png" // 图片路径（存放在public目录）
-          alt="StreamAI Logo" // 无障碍文本
-          width={50} // 显示宽度
-          height={50} // 显示高度
-          style={{
-            objectFit: 'contain' // 保持图片比例
-          }}
-        />
+    <div className="flex flex-col h-full">
+      {/* 消息容器 */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className={`flex ${message.isAI ? "justify-start" : "justify-end"}`}
+          >
+            <div
+              className={`max-w-3xl p-4 rounded-lg ${
+                message.isAI
+                  ? "bg-white text-gray-900 shadow-sm border border-gray-200"
+                  : "bg-blue-600 text-white"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                {message.isAI && (
+                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500" />
+                )}
+                <div className="whitespace-pre-wrap leading-relaxed">
+                  {message.content}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {isLoading && (
+          <div className="flex justify-start">
+            <div className="max-w-3xl p-4 rounded-lg bg-white shadow-sm border border-gray-200">
+              <div className="flex items-center gap-2 text-gray-500">
+                <div className="h-3 w-3 bg-gray-400 rounded-full animate-bounce" />
+                <div className="h-3 w-3 bg-gray-400 rounded-full animate-bounce delay-100" />
+                <div className="h-3 w-3 bg-gray-400 rounded-full animate-bounce delay-200" />
+              </div>
+            </div>
+          </div>
+        )}
+        <div ref={messagesEndRef} />
       </div>
 
-      {/* 表单容器：定位在页面中间偏下位置 */}
-      <div style={{
-        position: 'absolute',
-        top: '70%', // 从顶部70%位置开始
-        transform: 'translateY(-50%)', // 向上移动自身高度的50%实现精确居中
-        width: '100%', // 占满父容器宽度
-        maxWidth: '400px', // 最大宽度限制
-        textAlign: 'center' // 内容居中
-      }}>
-        {/* 表单元素，提交时触发handleFormSubmit */}
-        <form onSubmit={handleFormSubmit}>
-          {/* 输入框标签 */}
-          <label htmlFor="textInput" style={{ 
-            color: 'blue',
-            display: 'block', // 使标签独占一行
-            marginBottom: '8px', // 下边距
-            fontSize: '18px' // 字体大小
-          }}>
-            Enter some text:
-          </label>
-          
-          {/* 文本输入框 */}
-          <input
-            type="text"
-            id="textInput" // 与label的htmlFor关联
-            value={inputValue} // 绑定状态值
-            onChange={handleInputChange} // 变更事件处理
-            style={{
-              border: '2px solid blue', // 边框样式
-              backgroundColor: '#f0f8ff', // 浅蓝色背景
-              color: 'blue', // 文字颜色
-              padding: '12px', // 内边距
-              borderRadius: '6px', // 圆角边框
-              marginBottom: '16px', // 下边距
-              width: '100%', // 占满容器宽度
-              fontSize: '16px' // 字体大小
-            }}
-          />
-          
-          {/* 提交按钮 */}
-          <button 
-            type="submit" // 按钮类型为提交
-            style={{ 
-              backgroundColor: 'blue', 
-              color: 'white', 
-              padding: '12px 24px', // 上下12px，左右24px
-              borderRadius: '6px',
-              border: 'none', // 去除默认边框
-              cursor: 'pointer', // 鼠标悬停变为手型
-              fontSize: '16px',
-              width: '100%' // 占满容器宽度
-            }}
-          >
-            Submit
-          </button>
+      {/* 输入区域 */}
+      <div className="border-t border-gray-200 p-4">
+        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto relative">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="输入你的问题..."
+              className="flex-1 p-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="px-6 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              发送
+            </button>
+          </div>
         </form>
       </div>
     </div>

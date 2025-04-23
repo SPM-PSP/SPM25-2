@@ -1,5 +1,5 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import useUserStore from "@/lib/useUserStore";
 import { useRouter, usePathname, redirect } from "next/navigation";
@@ -8,7 +8,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
   const { setUser, user, logout } = useUserStore();
   const router = useRouter();
   const currentPath = usePathname(); // 返回当前路径
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   // 定义导航项数据
   const navItems = [
     { label: "游戏商城", href: "/dashboard" },
@@ -33,19 +33,23 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
     }
   };
   return (
-    <div>
-      {/* 背景图片 */}
-      <Image
-        src="/root_background.jpg"
-        alt="Background"
-        fill={true} // 使用新的 fill 布局策略
-        style={{ objectFit: "cover" }} // 直接在 style 中设置 objectFit
-        priority={true}
-      />
+    <div className="relative h-screen overflow-hidden">
+      {/* 背景图片容器 */}
+      <div className="fixed inset-0 -z-10">
+        <Image
+          src="/root_background.jpg"
+          alt="Background"
+          fill
+          style={{ objectFit: "cover" }}
+          priority
+        />
+      </div>
       {/* 前景内容 */}
-      <div style={{ position: "relative", zIndex: 1 }} className="px-10">
+      <div style={{ position: "relative", zIndex: 1 }} className="px-10 w-full">
+        {/* 占位符防止内容重叠 */}
+        <div className="h-16"></div>
         {/* 顶部栏 */}
-        <div className="flex justify-between items-center p-4">
+        <div className="w-full top-0 right-0 left-0 fixed flex bg-gradient-to-r from-black/60 to-transparent justify-between backdrop-blur-sm items-center p-4 z-50">
           {/* 左侧：Logo 和 搜索框 */}
           <div className="flex items-center space-x-15">
             <div className="flex items-center space-x-2">
@@ -59,11 +63,11 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
             {/* 添加表单和事件处理 */}
             <form onSubmit={handleSearch} className="flex">
               <input
-                  type="text"
-                  placeholder="搜索"
-                  className="bg-white/50 text-white px-4 py-2 rounded-lg w-150"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                type="text"
+                placeholder="搜索"
+                className="bg-white/50 text-white px-4 py-2 rounded-lg w-150"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
           </div>
@@ -81,7 +85,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
         {/* 侧边导航栏和主要内容区域 */}
         <div className="flex">
           {/* 侧边导航栏 */}
-          <div className="w-57 px-8 py-4 flex justify-end">
+          <div className="fixed left-0 top-20 bottom-0 z-40 w-57 px-8 py-4 flex justify-end">
             <nav>
               <ul>
                 {navItems.map((item) => (
@@ -104,8 +108,14 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
               </ul>
             </nav>
           </div>
-          {/* 主要内容区域 */}
-          <div className="flex-grow p-4">{children}</div>
+          {/* 可滚动内容区域 */}
+          <main className="flex-grow ml-57 h-[calc(100vh-5rem)] overflow-y-auto">
+            <div className="p-4 min-h-full">
+              <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6">
+                {children}
+              </div>
+            </div>
+          </main>
         </div>
       </div>
     </div>
