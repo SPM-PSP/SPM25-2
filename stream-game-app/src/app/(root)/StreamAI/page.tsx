@@ -35,13 +35,13 @@ export default function Home() {
       minHeight: '100vh', // 至少占满整个视口高度
       position: 'relative' // 作为子元素绝对定位的参照
     }}>
-      {/* 页面标题 */}
-      <h1 className="text-white">StreamAI</h1>
+      {/* 页面标题 
+      <h1 className="text-white">StreamAI</h1> */}
       
       {/* 图标*/}
       <div style={{ 
         position: 'absolute',
-        top: '80px',       // 距离顶部
+        top: '0px',       // 距离顶部
         left: '50%',        // 水平居中开始位置
         transform: 'translateX(-50%)', // 精确水平居中
         textAlign: 'center',
@@ -51,8 +51,8 @@ export default function Home() {
         <Image
           src="/StreamAI.png" // 图片路径（存放在public目录）
           alt="StreamAI Logo" // 无障碍文本
-          width={50} // 显示宽度
-          height={50} // 显示高度
+          width={70} // 显示宽度
+          height={70} // 显示高度
           style={{
             objectFit: 'contain' // 保持图片比例
           }}
@@ -65,7 +65,7 @@ export default function Home() {
         top: '70%', // 从顶部70%位置开始
         transform: 'translateY(-50%)', // 向上移动自身高度的50%实现精确居中
         width: '100%', // 占满父容器宽度
-        maxWidth: '400px', // 最大宽度限制
+        maxWidth: '500px', // 最大宽度限制
         textAlign: 'center' // 内容居中
       }}>
         {/* 表单元素，提交时触发handleFormSubmit */}
