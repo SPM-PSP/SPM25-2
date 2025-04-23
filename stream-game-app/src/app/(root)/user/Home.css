@@ -1,42 +1,12 @@
+
+
 /* Home.css */
-.layout {
-  display: flex;
-  height: 100vh;
-  background-color: #0a0a1a; /* 深色背景 */
-  background-image: radial-gradient(circle, #1a1a2e 0%, #0a0a1a 100%);
-}
-
-/* 侧边栏样式 */
-.sidebar {
-  width: 200px;
-  background-color: #0a0a1a;
-  color: #fff;
-  padding: 20px;
-  border-right: 1px solid #2a2a3a;
-}
-
-.sidebar ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.sidebar li {
-  margin-bottom: 20px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.sidebar .account-management {
-  border-left: 4px solid #ff4500; /* 账户管理的红色边框 */
-}
-
 /* 主内容区域样式 */
 .content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 20px;
 }
 
@@ -47,6 +17,7 @@
   align-items: center;
   width: 100%;
   max-width: 600px;
+  margin-top: 50px; /* 添加顶部外边距，避免内容顶上去 */
 }
 
 .text-white {
