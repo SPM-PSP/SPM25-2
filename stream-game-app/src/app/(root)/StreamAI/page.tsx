@@ -10,7 +10,6 @@ interface Message {
   isAI: boolean;
 }
 
-// 初始化OpenRouter客户端
 const openrouter = createOpenRouter({
   apiKey:
     "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",
@@ -22,7 +21,6 @@ export default function ChatInterface() {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // 在客户端加载后从 localStorage 恢复消息
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedMessages = localStorage.getItem("chatMessages");
@@ -32,7 +30,6 @@ export default function ChatInterface() {
     }
   }, []);
 
-  // 每当 messages 更新时，保存到 localStorage
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("chatMessages", JSON.stringify(messages));
@@ -69,30 +66,28 @@ export default function ChatInterface() {
 
       const aiMessage: Message = {
         id: Date.now() + 1,
-        content: "▌",
+        content:
+          '<div class="loading-dots"><span></span><span></span><span></span></div>',
         isAI: true,
       };
 
       setMessages((prev) => [...prev, aiMessage]);
       setIsLoading(false);
 
+      let isFirstChunk = true;
       for await (const delta of response.textStream) {
-        aiMessage.content =
-          aiMessage.content === "▌" ? delta : aiMessage.content + delta;
+        if (isFirstChunk) {
+          aiMessage.content = delta;
+          isFirstChunk = false;
+        } else {
+          aiMessage.content += delta;
+        }
 
         setMessages((prev) => {
           const prevMessages = prev.filter((m) => m.id !== aiMessage.id);
           return [...prevMessages, aiMessage];
         });
       }
-
-      setMessages((prev) =>
-        prev.map((m) =>
-          m.id === aiMessage.id
-            ? { ...m, content: m.content.replace(/▌$/, "") }
-            : m
-        )
-      );
     } catch (error) {
       console.error("API请求失败:", error);
       setMessages((prev) => [
@@ -124,6 +119,37 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col h-full">
+      <style>{`
+        .loading-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          min-height: 25px;
+        }
+        .loading-dots span {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #000;
+          animation: loading-dots 1.4s infinite;
+          margin: 0 5px;
+        }
+        .loading-dots span:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+        .loading-dots span:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        @keyframes loading-dots {
+          0%, 80%, 100% {
+            transform: scale(0);
+          }
+          40% {
+            transform: scale(1);
+          }
+        }
+      `}</style>
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
         {messages.map((message) => (
           <div
@@ -143,11 +169,10 @@ export default function ChatInterface() {
                     className="w-full h-full rounded-full object-cover"
                   />
                 </div>
-                <div className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200">
-                  <div className="whitespace-pre-wrap leading-relaxed">
-                    {message.content}
-                  </div>
-                </div>
+                <div
+                  className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center"
+                  dangerouslySetInnerHTML={{ __html: message.content }}
+                />
               </div>
             ) : (
               <div className="flex items-start gap-3 max-w-2xl w-full justify-end">
@@ -181,9 +206,11 @@ export default function ChatInterface() {
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
-            <div className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200">
-              <div className="flex gap-2">
-                <div className="h-7 w-1 bg-gray-400 animate-pulse" />
+            <div className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center justify-center">
+              <div className="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
               </div>
             </div>
           </div>
@@ -192,7 +219,7 @@ export default function ChatInterface() {
         <div ref={messagesEndRef} />
         <div className="backdrop-blur-sm fixed bottom-0 left-0 right-0 border-t border-gray-200">
           <div className="max-w-4xl mx-auto p-4">
-            <div className="flex gap-8 items-center">
+            <div className="flex gap-2 items-center">
               <button
                 onClick={clearChatHistory}
                 className="h-14 w-28 text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-500 dark:hover:bg-red-600 focus:outline-none dark:focus:ring-red-800"
