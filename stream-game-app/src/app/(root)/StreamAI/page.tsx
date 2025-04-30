@@ -12,7 +12,7 @@ interface Message {
 
 const openrouter = createOpenRouter({
   apiKey:
-    "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",
+    "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",
 });
 
 export default function ChatInterface() {
