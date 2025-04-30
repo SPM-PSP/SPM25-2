@@ -6,7 +6,11 @@ export default function GameTable(){
     const fetchGames=async()=>{
         const { data, error } = await supabase
         .from("game")
-        .select("*");
+        .select("*")
+        .neq("g_id","1")
+        .neq("g_id","12")
+        .neq("g_id","13")
+        .neq("g_id","23");
         if (error) {
             console.error("Error fetching games: ", error);
         } else {

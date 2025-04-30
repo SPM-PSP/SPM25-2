@@ -12,7 +12,7 @@ interface Message {
 
 const openrouter = createOpenRouter({
   apiKey:
-    "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",
+    "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",
 });
 
 export default function ChatInterface() {
@@ -60,7 +60,7 @@ export default function ChatInterface() {
 
     try {
       const response = await streamText({
-        model: openrouter("microsoft/mai-ds-r1:free"),
+        model: openrouter("qwen/qwen3-30b-a3b:free"),
         messages: [{ role: "user", content: input.trim() }],
       });
 
