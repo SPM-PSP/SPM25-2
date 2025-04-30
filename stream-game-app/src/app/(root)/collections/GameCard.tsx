@@ -6,7 +6,7 @@ interface GameCardProps {
         id: number;
         face_img: string;
         title: string;
-        genres: string[];
+        style: string;
         release_date: string;
     };
     onClick: () => void;
@@ -26,7 +26,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
             <div className='p-4'>
                 <h3 className='text-xl font-bold'>{game.title}</h3>
                 <p className='text-gray-300'>
-                    {game.genres.join(', ')} • {game.release_date}
+                    {game.style.split("，").join(', ')} • {game.release_date}
                 </p>
             </div>
         </div>
