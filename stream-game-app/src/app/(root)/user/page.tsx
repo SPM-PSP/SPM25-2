@@ -17,7 +17,7 @@ export default function Home() {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
     setError(null);
@@ -52,8 +52,10 @@ export default function Home() {
       });
 
       alert("信息更新成功！");
-    } catch (err: any) {
-      setError(err.message || "更新失败，请稍后再试。");
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : "更新失败，请稍后再试。";
+      setError(errorMessage);
     } finally {
       setIsSaving(false);
     }
@@ -76,7 +78,10 @@ export default function Home() {
         </div>
 
         {/* User Info Form */}
-        <div className="bg-[rgba(50,50,70,0.8)] p-5 rounded-[10px] w-full max-w-[400px]">
+        <form
+          onSubmit={handleSave}
+          className="bg-[rgba(50,50,70,0.8)] p-5 rounded-[10px] w-full max-w-[400px]"
+        >
           <div className="mb-5">
             <label className="block mb-2 text-white font-bold">Email</label>
             <input
@@ -100,7 +105,7 @@ export default function Home() {
           <div className="mb-5">
             <label className="block mb-2 text-white font-bold">密码</label>
             <input
-              type="text"
+              type="password"
               value={user?.password || ""}
               onChange={(e) =>
                 user && setUser({ ...user, password: e.target.value })
@@ -120,14 +125,14 @@ export default function Home() {
             />
           </div>
           <button
+            type="submit"
             className="bg-[#ff69b4] text-white border-none py-[10px] px-5 text-base cursor-pointer rounded-[5px] hover:bg-[#ff1493] transition-colors duration-300 mt-[10px]"
-            onClick={handleSave}
             disabled={isSaving}
           >
             {isSaving ? "Saving..." : "Save"}
           </button>
           {error && <p className="text-red-500 mt-2">{error}</p>}
-        </div>
+        </form>
       </div>
     </div>
   );
