@@ -127,7 +127,7 @@ export default function Home() {
       <main className="w-full p-4 bg-[#0f0f1a] text-white">
         <div className="flex justify-between mb-4 px-4 items-center text-base font-normal">
           <h2 className="text-xl flex-1">{rankingTitle}</h2>
-          <div className="w-1/6 text-right" style={{ marginRight: "-2rem" }}>
+          <div className="w-1/6 text-right">
             <span>发售时间</span>
           </div>
           <div className="w-1/6 text-right" style={{ marginRight: "0.5rem" }}>
