@@ -1,9 +1,7 @@
-
-
 /* Home.css */
 /* 主内容区域样式 */
 .content {
-  flex-grow: 1;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,7 +15,7 @@
   align-items: center;
   width: 100%;
   max-width: 600px;
-  margin-top: 50px; /* 添加顶部外边距，避免内容顶上去 */
+  margin-top: 50px; /* 增加顶部外边距 */
 }
 
 .text-white {
@@ -111,3 +109,19 @@
   color: white;
   margin: 5px 0;
 }
+
+/* 拖动图标和游戏详情对齐 */
+.drag-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #ff69b4;
+  border-radius: 50%;
+  margin-right: 15px;
+  cursor: move;
+  color: white;
+  font-size: 20px;
+}
+

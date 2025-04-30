@@ -48,8 +48,8 @@ export default function Home() {
 
   return (
     <div className="layout">
-      <div className="content">
-        <div className="user-profile">
+      <div className="content" style={{ paddingTop: '50px' }}>
+        <div className="user-profile" style={{ marginTop: '50px' }}>
           {/* 头像 */}
           <div className="avatar-container">
             <Image
