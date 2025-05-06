@@ -4,8 +4,8 @@ import Head from 'next/head';
 import { useSearchParams } from 'next/navigation';
 import './page.css';
 import supabase from '@/lib/supabase';
+import Link from "next/link";
 
-// 定义游戏数据接口
 interface Game {
     g_id: number;
     g_name: string;
@@ -58,7 +58,11 @@ const Home = () => {
             <div className="searchPage">
                 <div className="search-results-container">
                     {searchResults.map((game) => (
-                        <div key={game.g_id} className="game-item">
+                        <Link
+                            key={game.g_id}
+                            href={`/gameDetail/${game.g_id}`}
+                            className="game-item"
+                        >
                             <img
                                 src={game.face_img}
                                 alt={game.g_name}
@@ -77,7 +81,7 @@ const Home = () => {
                                 </div>
                                 <p className="game-time">{game.g_time}</p>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>
