@@ -17,6 +17,7 @@ interface Game {
   Description: string;
   g_time: string;
   style: string;
+  avg_rating: number;
 }
 
 export default async function Home({
@@ -61,10 +62,17 @@ export default async function Home({
             <span className="info-label">发行时间：</span>
             {game.g_time}
           </p>
+
+          <p className="text-white">
+            <span className="info-label">用户评分：</span>
+            {game.avg_rating}
+           </p>
+
           <p className="text-white">
             <span className="info-label">定位标签：</span>
             {game.style}
           </p>
+
           <div className="mt-4 flex items-center space-x-4">
             <RatingComponent g_id={game.g_id} />
             <FavoriteComponent g_id={game.g_id} />
