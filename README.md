@@ -25,7 +25,13 @@ yarn dev
 npm install next react react-dom
 ```
 
-> 实际上，项目运行前需要安装多个依赖模块，建议根据终端警告提示逐步安装缺失的依赖。
+然后继续在`stream-game-app`目录下执行下面命令以安装所有包：
+
+```
+npm install
+# 或简写
+npm i
+```
 
 ## UI Design
 
