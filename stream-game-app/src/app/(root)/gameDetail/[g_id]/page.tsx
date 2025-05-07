@@ -57,16 +57,20 @@ export default async function Home({
 
         <div className="right-container">
           <img src={game.face_img} alt="封面图" className="cover-image" />
-          <p className="game-description">{game.Description}</p>
-          <p>
+          <p className="game-description text-white">{game.Description}</p>
+          <p className="text-white">
             <span className="info-label">发行时间：</span>
             {game.g_time}
           </p>
+<<<<<<< HEAD
           <p>
             <span className="info-label">用户评分：</span>
             {game.avg_rating}
            </p>
           <p>
+=======
+          <p className="text-white">
+>>>>>>> b79ce859eb381be9cc51587e0f371b42c4e76b5e
             <span className="info-label">定位标签：</span>
             {game.style}
           </p>
