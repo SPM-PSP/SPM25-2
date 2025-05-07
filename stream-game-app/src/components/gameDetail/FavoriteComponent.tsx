@@ -39,7 +39,6 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
         const newFavoriteStatus = !isFavorite;
         setIsFavorite(newFavoriteStatus);
 
-        // Fetch existing collection for the user
         const { data, error } = await supabase
             .from('collections')
             .select('g_ids')
@@ -48,46 +47,42 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
 
         if (error && error.code !== 'PGRST116') {
             console.error('Error fetching collection:', error);
-            setIsFavorite(!newFavoriteStatus); // Revert state on error
+            setIsFavorite(!newFavoriteStatus);
             return;
         }
 
         let gIds: string[] = [];
         if (data) {
-            // Existing record found, update it
+
             gIds = data.g_ids ? data.g_ids.split('---').filter(Boolean) : [];
         }
 
         if (newFavoriteStatus) {
-            // Add g_id if not already present
             if (!gIds.includes(String(g_id))) {
                 gIds.push(String(g_id));
             }
         } else {
-            // Remove g_id
             gIds = gIds.filter((id: string) => id !== String(g_id));
         }
 
         const updatedGIds = gIds.join('---') + '---';
 
         if (!data) {
-            // No existing record, create a new one
             const { error: insertError } = await supabase
                 .from('collections')
                 .insert({ u_id: user.u_id, g_ids: updatedGIds });
             if (insertError) {
                 console.error('Error creating collection:', insertError);
-                setIsFavorite(!newFavoriteStatus); // Revert state on error
+                setIsFavorite(!newFavoriteStatus);
                 return;
             }
         } else {
-            // Update existing record
             const { error: updateError } = await supabase
                 .from('collections')
                 .upsert({ u_id: user.u_id, g_ids: updatedGIds });
             if (updateError) {
                 console.error('Error updating collection:', updateError);
-                setIsFavorite(!newFavoriteStatus); // Revert state on error
+                setIsFavorite(!newFavoriteStatus);
                 return;
             }
         }
