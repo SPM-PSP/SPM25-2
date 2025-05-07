@@ -43,7 +43,7 @@ export default async function Home({
     return (
       <div className="game-detail-container">
         <div className="left-container">
-          <h1 className="game-name">{game.g_name}</h1>
+          <h1 className="game-name text-white">{game.g_name}</h1>
           <div className="game-media-carousel">
             <MediaCarousel
               images={mediaItems}
