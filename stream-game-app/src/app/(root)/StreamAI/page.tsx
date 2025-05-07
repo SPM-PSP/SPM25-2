@@ -1,8 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
-import { streamText } from "ai";
+import OpenAI from "openai";
 
 interface Message {
   id: number;
@@ -10,9 +9,10 @@ interface Message {
   isAI: boolean;
 }
 
-const openrouter = createOpenRouter({
-  apiKey:
-    "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",
+const client = new OpenAI({
+  apiKey: "sk-zn96dFfDIRAtBNhdUvi0p1h4yYfBsxtVeP2Eq9UU3FewQ8q0",
+  baseURL: "https://api.chatanywhere.tech/v1",
+  dangerouslyAllowBrowser: true,
 });
 
 export default function ChatInterface() {
@@ -59,15 +59,15 @@ export default function ChatInterface() {
     setIsLoading(true);
 
     try {
-      const response = await streamText({
-        model: openrouter("qwen/qwen3-30b-a3b:free"),
+      const response = await client.chat.completions.create({
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: input.trim() }],
+        stream: true,
       });
 
       const aiMessage: Message = {
         id: Date.now() + 1,
-        content:
-          '<div class="loading-dots"><span></span><span></span><span></span></div>',
+        content: "",
         isAI: true,
       };
 
@@ -75,18 +75,21 @@ export default function ChatInterface() {
       setIsLoading(false);
 
       let isFirstChunk = true;
-      for await (const delta of response.textStream) {
-        if (isFirstChunk) {
-          aiMessage.content = delta;
-          isFirstChunk = false;
-        } else {
-          aiMessage.content += delta;
-        }
+      for await (const chunk of response) {
+        const delta = chunk.choices[0]?.delta?.content || "";
+        if (delta) {
+          if (isFirstChunk) {
+            aiMessage.content = delta;
+            isFirstChunk = false;
+          } else {
+            aiMessage.content += delta;
+          }
 
-        setMessages((prev) => {
-          const prevMessages = prev.filter((m) => m.id !== aiMessage.id);
-          return [...prevMessages, aiMessage];
-        });
+          setMessages((prev) => {
+            const prevMessages = prev.filter((m) => m.id !== aiMessage.id);
+            return [...prevMessages, aiMessage];
+          });
+        }
       }
     } catch (error) {
       console.error("API请求失败:", error);
@@ -121,11 +124,14 @@ export default function ChatInterface() {
     <div className="flex flex-col h-full">
       <style>{`
         .loading-dots {
-          display: flex;
+          position: absolute;
+          display: inline-flex;
           align-items: center;
-          justify-content: center;
           height: 100%;
           min-height: 25px;
+          left: 10px;
+          top: 50%;
+          transform: translateY(-50%);
         }
         .loading-dots span {
           width: 10px;
@@ -149,6 +155,12 @@ export default function ChatInterface() {
             transform: scale(1);
           }
         }
+        .message-box {
+          position: relative;
+          max-width: 672px; /* Matches max-w-2xl */
+          width: 100%;
+          transition: width 0.2s ease-in-out;
+        }
       `}</style>
       <div className="flex-1 overflow-y-auto p-4 space-y-4 pb-32">
         {messages.map((message) => (
@@ -159,7 +171,7 @@ export default function ChatInterface() {
             }`}
           >
             {message.isAI ? (
-              <div className="flex items-start gap-3 max-w-2xl w-full">
+              <div className="flex items-start gap-3 w-full">
                 <div className="flex-shrink-0 w-12 h-12 mt-2">
                   <Image
                     src="/StreamAI.png"
@@ -169,10 +181,12 @@ export default function ChatInterface() {
                     className="w-full h-full rounded-full object-cover"
                   />
                 </div>
-                <div
-                  className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center"
-                  dangerouslySetInnerHTML={{ __html: message.content }}
-                />
+                <div className="message-box">
+                  <div
+                    className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center message-content"
+                    dangerouslySetInnerHTML={{ __html: message.content }}
+                  />
+                </div>
               </div>
             ) : (
               <div className="flex items-start gap-3 max-w-2xl w-full justify-end">
@@ -196,7 +210,7 @@ export default function ChatInterface() {
         ))}
 
         {isLoading && (
-          <div className="flex items-start gap-3 max-w-4xl w-full">
+          <div className="flex items-start gap-3 w-full">
             <div className="flex-shrink-0 w-12 h-12 mt-2">
               <Image
                 src="/StreamAI.png"
@@ -206,11 +220,13 @@ export default function ChatInterface() {
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
-            <div className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center justify-center">
-              <div className="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
+            <div className="message-box">
+              <div className="flex-1 p-4 rounded-lg bg-white shadow-sm border border-gray-200 min-h-[50px] flex items-center message-content">
+                <div className="loading-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
             </div>
           </div>
