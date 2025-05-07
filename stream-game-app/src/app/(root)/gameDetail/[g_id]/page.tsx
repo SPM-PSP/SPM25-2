@@ -56,12 +56,12 @@ export default async function Home({
 
         <div className="right-container">
           <img src={game.face_img} alt="封面图" className="cover-image" />
-          <p className="game-description">{game.Description}</p>
-          <p>
+          <p className="game-description text-white">{game.Description}</p>
+          <p className="text-white">
             <span className="info-label">发行时间：</span>
             {game.g_time}
           </p>
-          <p>
+          <p className="text-white">
             <span className="info-label">定位标签：</span>
             {game.style}
           </p>
