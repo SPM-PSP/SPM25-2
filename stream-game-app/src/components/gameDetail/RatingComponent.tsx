@@ -52,61 +52,6 @@ const RatingComponent: React.FC<RatingComponentProps> = ({ g_id }) => {
   const [currentRating, setCurrentRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
-<<<<<<< HEAD
-    useEffect(() => {
-        const loadCurrentRating = async () => {
-            if (!user) return;
-            const { data, error } = await supabase
-                .from('rating')
-                .select('rating')
-                .eq('u_id', user.u_id)
-                .eq('g_id', g_id)
-                .single();
-            if (data) {
-                setCurrentRating(data.rating);
-            }
-        };
-        loadCurrentRating();
-    }, [user, g_id]);
-
-    const handleClick = async (index: number) => {
-        if (!user) {
-            alert('请先登录');
-            return;
-        }
-        setCurrentRating(index);
-        const { error } = await supabase
-            .from('rating')
-            .upsert({ u_id: user.u_id, g_id, rating: index });
-        if (error) {
-            console.error('Error updating rating:', error);
-        }
-
-        const { data: ratingsData, error: ratingsError } = await supabase
-            .from('rating')
-            .select('rating')
-            .eq('g_id', g_id);
-
-        if (ratingsError) {
-            console.error('Error fetching ratings:', ratingsError);
-            return;
-        }
-
-        if (ratingsData.length > 0) {
-
-            const totalRating = ratingsData.reduce((sum, rating) => sum + rating.rating, 0);
-            const avgRating = totalRating / ratingsData.length;
-
-            const { error: updateGameError } = await supabase
-                .from('game')
-                .update({ avg_rating: avgRating })
-                .eq('g_id', g_id);
-
-            if (updateGameError) {
-                console.error('Error updating game average rating:', updateGameError);
-            }
-        }
-=======
   useEffect(() => {
     const loadCurrentRating = async () => {
       if (!user) return;
@@ -119,7 +64,6 @@ const RatingComponent: React.FC<RatingComponentProps> = ({ g_id }) => {
       if (data) {
         setCurrentRating(data.rating);
       }
->>>>>>> b79ce859eb381be9cc51587e0f371b42c4e76b5e
     };
     loadCurrentRating();
   }, [user, g_id]);
