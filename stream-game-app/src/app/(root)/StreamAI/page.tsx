@@ -60,7 +60,7 @@ export default function ChatInterface() {
 
     try {
       const response = await client.chat.completions.create({
-        model: "deepseek-r1",
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: input.trim() }],
         stream: true,
       });
@@ -129,6 +129,7 @@ export default function ChatInterface() {
           align-items: center;
           height: 100%;
           min-height: 25px;
+          left: 10px;
           top: 50%;
           transform: translateY(-50%);
         }
