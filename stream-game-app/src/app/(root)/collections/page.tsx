@@ -3,6 +3,7 @@ import React, { useState, useEffect, DragEvent } from "react";
 import "./Home.css"; // 引入CSS文件
 import { createClient } from "@supabase/supabase-js";
 import useUserStore from "@/lib/useUserStore";
+import { useRouter } from "next/navigation";
 
 // 初始化 Supabase 客户端
 const supabase = createClient(
@@ -17,6 +18,7 @@ export default function Home() {
   const [dragOverItem, setDragOverItem] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter(); // 使用 useRouter 钩子
 
   // 获取收藏的游戏数据
   useEffect(() => {
@@ -139,6 +141,13 @@ export default function Home() {
     setDragOverItem(null);
   };
 
+  // 处理点击事件，跳转到游戏详情页
+  const handleClick = (game: any) => {
+    return () => {
+      router.push(`/gameDetail/${game.g_id}`);
+    };
+  };
+
   return (
     <div className="content">
       <div className="center-image">
@@ -167,6 +176,7 @@ export default function Home() {
                     ? { backgroundColor: "#3a2a4a" }
                     : {}
                 }
+                onClick={handleClick(game)} // 添加点击事件
               >
                 <div className="game-rank">{index + 1}</div>
                 <div className="game-image">
@@ -175,8 +185,11 @@ export default function Home() {
                 </div>
                 <div className="game-details">
                   <h3>{game.g_name}</h3>
-                  <p className="game-style">风格: {game.style}</p>
-                  <p className="game-tags">{game.g_desc}</p>
+                  <div className="game-tags-container">
+                    {game.style.split("，").map((tag, tagIndex) => (
+                      <span key={tagIndex} className="game-tag">{tag}</span>
+                    ))}
+                  </div>
                   <p className="release-date">发行日期: {game.g_time}</p>
                 </div>
               </div>

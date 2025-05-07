@@ -77,12 +77,6 @@
   font-size: 14px;
 }
 
-.game-tags {
-  margin: 5px 0;
-  color: #aaa;
-  font-size: 14px;
-}
-
 .release-date {
   margin: 5px 0;
   color: #ddd;
@@ -111,4 +105,21 @@
   font-size: 18px;
   color: #ff3333;
   margin: 50px 0;
+}
+
+/* 标签样式 */
+.game-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 5px 0;
+}
+
+.game-tag {
+  background-color: #1a1a1a; /* 深黑色背景 */
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px; /* 方形边角 */
+  font-size: 12px;
+  border: 1px solid rgba(233, 234, 49, 0.2);
 }

@@ -5,6 +5,7 @@ const useUserStore = create(
   persist(
     (set) => ({
       user: {
+          u_id: 0,
         email: "",
         u_name: "",
         password: "",
