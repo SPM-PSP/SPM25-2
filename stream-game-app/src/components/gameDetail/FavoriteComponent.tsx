@@ -19,10 +19,6 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
                 .select('g_ids')
                 .eq('u_id', user.u_id)
                 .single();
-            if (error && error.code !== 'PGRST116') {
-                console.error('Error loading favorite:', error);
-                return;
-            }
             if (data) {
                 const gIds = data.g_ids.split('---').filter(Boolean);
                 setIsFavorite(gIds.includes(String(g_id)));

@@ -70,6 +70,31 @@ const RatingComponent: React.FC<RatingComponentProps> = ({ g_id }) => {
         if (error) {
             console.error('Error updating rating:', error);
         }
+
+        const { data: ratingsData, error: ratingsError } = await supabase
+            .from('rating')
+            .select('rating')
+            .eq('g_id', g_id);
+
+        if (ratingsError) {
+            console.error('Error fetching ratings:', ratingsError);
+            return;
+        }
+
+        if (ratingsData.length > 0) {
+
+            const totalRating = ratingsData.reduce((sum, rating) => sum + rating.rating, 0);
+            const avgRating = totalRating / ratingsData.length;
+
+            const { error: updateGameError } = await supabase
+                .from('game')
+                .update({ avg_rating: avgRating })
+                .eq('g_id', g_id);
+
+            if (updateGameError) {
+                console.error('Error updating game average rating:', updateGameError);
+            }
+        }
     };
 
     return (
