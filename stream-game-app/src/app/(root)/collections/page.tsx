@@ -11,14 +11,28 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+// 定义游戏对象的接口
+interface Game {
+  g_id: number;
+  face_img: string;
+  g_name: string;
+  style: string;
+  g_time: string;
+}
+
+// 定义收藏表的接口
+interface Collection {
+  g_ids: string;
+}
+
 export default function Home() {
   const { user } = useUserStore();
-  const [games, setGames] = useState<any[]>([]);
-  const [dragItem, setDragItem] = useState<any>(null);
-  const [dragOverItem, setDragOverItem] = useState<any>(null);
+  const [games, setGames] = useState<Game[]>([]);
+  const [dragItem, setDragItem] = useState<Game | null>(null);
+  const [dragOverItem, setDragOverItem] = useState<Game | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const router = useRouter(); // 使用 useRouter 钩子
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   // 获取收藏的游戏数据
   useEffect(() => {
@@ -33,12 +47,11 @@ export default function Home() {
         setLoading(true);
         setError(null);
 
-        // 从 collections 表中获取该用户的游戏 ID 列表
         const { data: collectionData, error: collectionError } = await supabase
           .from("collections")
           .select("g_ids")
           .eq("u_id", user.u_id)
-          .single(); // 假设一个用户只有一个收藏记录
+          .single();
 
         if (collectionError) {
           throw collectionError;
@@ -48,18 +61,16 @@ export default function Home() {
           throw new Error("该用户没有收藏的游戏");
         }
 
-        const gameIds = collectionData.g_ids.split("---"); // 假设 g_ids 是用 "---" 分隔的字符串
+        const gameIds = (collectionData as Collection).g_ids.split("---");
 
-        // 过滤掉无效的值，并转换为数字
         const validGameIds = gameIds
-          .map(id => parseInt(id))
-          .filter(id => !isNaN(id));
+          .map((id: string) => parseInt(id))
+          .filter((id: number) => !isNaN(id));
 
         if (validGameIds.length === 0) {
           throw new Error("该用户没有收藏的游戏");
         }
 
-        // 从 game 表中获取这些游戏的详细信息
         const { data: gameData, error: gameError } = await supabase
           .from("game")
           .select("*")
@@ -69,14 +80,19 @@ export default function Home() {
           throw gameError;
         }
 
-        // 按照 validGameIds 的顺序对游戏进行排序
         const orderedGames = validGameIds
-          .map(id => gameData.find(game => game.g_id === id))
-          .filter(game => game !== undefined);
+          .map((id: number) =>
+            (gameData as Game[]).find((game: Game) => game.g_id === id)
+          )
+          .filter((game): game is Game => game !== undefined);
 
         setGames(orderedGames);
       } catch (err) {
-        setError(err.message || "获取收藏游戏失败，请稍后再试。");
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("获取收藏游戏失败，请稍后再试。");
+        }
       } finally {
         setLoading(false);
       }
@@ -85,12 +101,12 @@ export default function Home() {
     fetchCollectionGames();
   }, [user?.u_id]);
 
-  const handleDragStart = (e: DragEvent<HTMLDivElement>, game: any) => {
+  const handleDragStart = (e: DragEvent<HTMLDivElement>, game: Game) => {
     setDragItem(game);
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleDragOver = (e: DragEvent<HTMLDivElement>, game: any) => {
+  const handleDragOver = (e: DragEvent<HTMLDivElement>, game: Game) => {
     e.preventDefault();
     setDragOverItem(game);
     e.dataTransfer.dropEffect = "move";
@@ -101,21 +117,19 @@ export default function Home() {
     if (!dragItem || !dragOverItem) return;
 
     const newGames = [...games];
-    const dragIndex = newGames.findIndex(g => g.g_id === dragItem.g_id);
-    const overIndex = newGames.findIndex(g => g.g_id === dragOverItem.g_id);
+    const dragIndex = newGames.findIndex((g) => g.g_id === dragItem.g_id);
+    const overIndex = newGames.findIndex((g) => g.g_id === dragOverItem.g_id);
 
     if (dragIndex !== -1 && overIndex !== -1 && dragIndex !== overIndex) {
-      // 交换两个游戏的位置
       const temp = newGames[dragIndex];
       newGames[dragIndex] = newGames[overIndex];
       newGames[overIndex] = temp;
 
       setGames(newGames);
 
-      // 更新 collections 表中的 g_ids 顺序
       const updateCollectionOrder = async () => {
         try {
-          const newGameIds = newGames.map(game => game.g_id).join("---");
+          const newGameIds = newGames.map((game) => game.g_id).join("---");
           const { error } = await supabase
             .from("collections")
             .update({ g_ids: newGameIds })
@@ -141,8 +155,7 @@ export default function Home() {
     setDragOverItem(null);
   };
 
-  // 处理点击事件，跳转到游戏详情页
-  const handleClick = (game: any) => {
+  const handleClick = (game: Game) => {
     return () => {
       router.push(`/gameDetail/${game.g_id}`);
     };
@@ -151,7 +164,6 @@ export default function Home() {
   return (
     <div className="content">
       <div className="center-image">
-        {/* 游戏卡片列表 */}
         <div className="game-list">
           {loading ? (
             <div className="loading-message">正在加载收藏游戏数据...</div>
@@ -176,19 +188,27 @@ export default function Home() {
                     ? { backgroundColor: "#3a2a4a" }
                     : {}
                 }
-                onClick={handleClick(game)} // 添加点击事件
+                onClick={handleClick(game)}
               >
                 <div className="game-rank">{index + 1}</div>
                 <div className="game-image">
-                  {/* 假设 face_img 字段存储的是图片的 URL */}
-                  <img src={game.face_img} alt={game.g_name} width={250} height={140} />
+                  <img
+                    src={game.face_img}
+                    alt={game.g_name}
+                    width={250}
+                    height={140}
+                  />
                 </div>
                 <div className="game-details">
                   <h3>{game.g_name}</h3>
                   <div className="game-tags-container">
-                    {game.style.split("，").map((tag, tagIndex) => (
-                      <span key={tagIndex} className="game-tag">{tag}</span>
-                    ))}
+                    {game.style
+                      .split("，")
+                      .map((tag: string, tagIndex: number) => (
+                        <span key={tagIndex} className="game-tag">
+                          {tag}
+                        </span>
+                      ))}
                   </div>
                   <p className="release-date">发行日期: {game.g_time}</p>
                 </div>
