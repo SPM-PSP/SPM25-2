@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import  supabase  from '@/lib/supabase';
+import supabase from '@/lib/supabase';
 import useUserStore from "@/lib/useUserStore";
 
 interface FavoriteComponentProps {
@@ -19,6 +19,7 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
                 .select('g_ids')
                 .eq('u_id', user.u_id)
                 .single();
+
             if (data) {
                 const gIds = data.g_ids.split('---').filter(Boolean);
                 setIsFavorite(gIds.includes(String(g_id)));
@@ -34,15 +35,25 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
         }
         const newFavoriteStatus = !isFavorite;
         setIsFavorite(newFavoriteStatus);
+
         const { data, error } = await supabase
             .from('collections')
             .select('g_ids')
             .eq('u_id', user.u_id)
             .single();
-        if (error) {
-            throw error;
+
+        if (error && error.code !== 'PGRST116') {
+            console.error('Error fetching collection:', error);
+            setIsFavorite(!newFavoriteStatus);
+            return;
         }
-        let gIds: string[] = data?.g_ids ? data.g_ids.split('---').filter(Boolean) : [];
+
+        let gIds: string[] = [];
+        if (data) {
+
+            gIds = data.g_ids ? data.g_ids.split('---').filter(Boolean) : [];
+        }
+
         if (newFavoriteStatus) {
             if (!gIds.includes(String(g_id))) {
                 gIds.push(String(g_id));
@@ -50,10 +61,28 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
         } else {
             gIds = gIds.filter((id: string) => id !== String(g_id));
         }
+
         const updatedGIds = gIds.join('---') + '---';
-        await supabase
-            .from('collections')
-            .upsert({ u_id: user.u_id, g_ids: updatedGIds });
+
+        if (!data) {
+            const { error: insertError } = await supabase
+                .from('collections')
+                .insert({ u_id: user.u_id, g_ids: updatedGIds });
+            if (insertError) {
+                console.error('Error creating collection:', insertError);
+                setIsFavorite(!newFavoriteStatus);
+                return;
+            }
+        } else {
+            const { error: updateError } = await supabase
+                .from('collections')
+                .upsert({ u_id: user.u_id, g_ids: updatedGIds });
+            if (updateError) {
+                console.error('Error updating collection:', updateError);
+                setIsFavorite(!newFavoriteStatus);
+                return;
+            }
+        }
     };
 
     return (
@@ -62,7 +91,7 @@ const FavoriteComponent: React.FC<FavoriteComponentProps> = ({ g_id }) => {
             fill={isFavorite ? 'red' : 'none'}
             viewBox="0 0 24 24"
             strokeWidth="1.5"
-            stroke="currentColor"
+            stroke="white" // 固定白色边框
             className="size-6 cursor-pointer"
             onClick={handleFavorite}
             style={{ width: '24px', height: '24px' }}

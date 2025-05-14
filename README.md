@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <h1>Stream 游戏推荐平台</h1>
+  <p align="center">
+    &#128195 <a href="#">APP URL</a> •  
+  </p>
+</div>
 
-## Getting Started
+## 快速开始
 
-First, run the development server:
+这是一个基于 [Next.js](https://nextjs.org/) 的项目，通过 [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) 脚手架工具初始化
 
-```bash
+首先，在`stream-game-app`目录下运行下面的命令以启动开发服务器：
+
+```
 npm run dev
-# or
+# 或者使用 yarn
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+在浏览器中访问 [http://localhost:3000](http://localhost:3000/) 查看运行结果。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+如果系统提示错误 `you haven’t install ‘next’ yet`, 请先运行一下命令安装依赖：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+npm install next react react-dom
+```
 
-## Learn More
+然后继续在`stream-game-app`目录下执行下面命令以安装所有包：
 
-To learn more about Next.js, take a look at the following resources:
+```
+npm install
+# 或简写
+npm i
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## UI Design
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+所有页面均使用 [Figma](https://www.figma.com) 进行原型绘制和视觉设计。
 
-## Deploy on Vercel
+[设计文件 URL](https://www.figma.com/design/2paZ67mRYmGg0y4DhNzBx8/stream-game-app?node-id=0-1&p=f&t=xSf5eKOxvTC0SzGG-0)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

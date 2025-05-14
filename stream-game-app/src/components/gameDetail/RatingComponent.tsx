@@ -23,7 +23,7 @@ const Stars: React.FC<{
                 fill={i <= (hoverRating || currentRating) ? 'yellow' : 'none'}
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
-                stroke="currentColor"
+                stroke="white"
                 className="size-6 cursor-pointer"
                 onMouseOver={() => handleMouseOver(i)}
                 onMouseLeave={handleMouseLeave}
@@ -69,6 +69,32 @@ const RatingComponent: React.FC<RatingComponentProps> = ({ g_id }) => {
             .upsert({ u_id: user.u_id, g_id, rating: index });
         if (error) {
             console.error('Error updating rating:', error);
+        }
+
+        const { data: ratingsData, error: ratingsError } = await supabase
+            .from('rating')
+            .select('rating')
+            .eq('g_id', g_id);
+
+        if (ratingsError) {
+            console.error('Error fetching ratings:', ratingsError);
+            return;
+        }
+
+        if (ratingsData.length > 0) {
+
+            const totalRating = ratingsData.reduce((sum, rating) => sum + rating.rating, 0);
+            const avgRating = totalRating / ratingsData.length;
+
+
+            const { error: updateGameError } = await supabase
+                .from('game')
+                .update({ avg_rating: avgRating })
+                .eq('g_id', g_id);
+
+            if (updateGameError) {
+                console.error('Error updating game average rating:', updateGameError);
+            }
         }
     };
 

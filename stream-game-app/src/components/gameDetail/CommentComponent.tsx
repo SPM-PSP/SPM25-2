@@ -7,7 +7,7 @@ interface Comment {
     u_id: string;
     g_id: number;
     u_name: string;
-    comment: string;
+    content: string;
     time: string;
     simplified_time: string;
 }
@@ -23,14 +23,16 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ g_id }) => {
 
     // Load comments from Supabase
     const loadComments = useCallback(async () => {
+        console.log('获取评论，游戏 ID:', g_id);
         const { data, error } = await supabase
             .from("comments")
             .select("*")
             .eq("g_id", g_id);
         if (error) {
-            console.error('Error loading comments:', error);
+            console.error('获取评论失败:', error.message, error.details, error.hint);
             return;
         }
+        console.log('已加载评论:', data);
         setComments(data || []);
     }, [g_id]);
 
@@ -46,7 +48,7 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ g_id }) => {
     // Handle comment submission
     const handleCommentSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user) {
+        if (!user || !user.u_id) {
             alert('请先登录');
             return;
         }
@@ -56,39 +58,77 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ g_id }) => {
         }
 
         const currentTime = new Date();
-        const localTime = currentTime.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' });
-        const date = new Date(localTime);
-        const simplified_time = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+        const localTime = currentTime.toISOString();
+        const simplified_time = currentTime.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
 
-        const { error } = await supabase
+        console.log('提交评论:', {
+            u_id: user.u_id,
+            g_id,
+            u_name: user.u_name,
+            content: comment,
+            time: localTime,
+            simplified_time
+        });
+
+        // Check if a comment already exists for this user and game
+        const { data: existingComment, error: checkError } = await supabase
             .from("comments")
-            .insert({
-                u_id: user.u_id,
-                g_id,
-                u_name: user.name,
-                comment,
-                time: localTime,
-                simplified_time
-            });
+            .select("*")
+            .eq("u_id", user.u_id)
+            .eq("g_id", g_id)
+            .single();
 
-        if (error) {
-            console.error('Error submitting comment:', error);
-            alert('提交评论失败');
+        if (checkError && checkError.code !== 'PGRST116') {
+            console.error('检查评论失败:', checkError.message, checkError.details, checkError.hint);
+            alert(`检查评论失败: ${checkError.message}`);
             return;
         }
 
-        setComments(prev => [...prev, {
-            u_id: user.u_id,
-            g_id,
-            u_name: user.name,
-            comment,
-            time: localTime,
-            simplified_time
-        }]);
-        setComment('');
-    }, [comment, user, g_id]);
+        if (existingComment) {
+            const { error: updateError } = await supabase
+                .from("comments")
+                .update({
+                    content: comment,
+                    time: localTime,
+                    simplified_time
+                })
+                .eq("u_id", user.u_id)
+                .eq("g_id", g_id);
 
-    // Handle Enter key to submit comment
+            if (updateError) {
+                console.error('更新评论失败:', updateError.message, updateError.details, updateError.hint);
+                alert(`更新评论失败: ${updateError.message}`);
+                return;
+            }
+            console.log('评论更新成功');
+        } else {
+            const { error: insertError } = await supabase
+                .from("comments")
+                .insert({
+                    u_id: user.u_id,
+                    g_id,
+                    u_name: user.u_name,
+                    content: comment,
+                    time: localTime,
+                    simplified_time
+                });
+
+            if (insertError) {
+                console.error('提交评论失败:', insertError.message, insertError.details, insertError.hint);
+                alert(`提交评论失败: ${insertError.message}`);
+                return;
+            }
+            console.log('评论提交成功');
+        }
+
+        loadComments();
+        setComment('');
+    }, [comment, user, g_id, loadComments]);
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -122,7 +162,7 @@ const CommentComponent: React.FC<CommentComponentProps> = ({ g_id }) => {
                                     <span className="comment-user">{c.u_name}</span>
                                     <span className="comment-time">{c.simplified_time}</span>
                                 </div>
-                                <p className="comment-content">{c.comment}</p>
+                                <p className="comment-content">{c.content}</p>
                             </li>
                         ))}
                     </ul>
