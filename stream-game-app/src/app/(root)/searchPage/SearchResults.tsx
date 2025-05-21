@@ -80,14 +80,36 @@ export default function SearchResults() {
           没有找到匹配的游戏。
         </div>
       )}
-      {searchResults.map((game) => (
+      {searchResults.map((game, index) => (
         <div
           key={game.g_id}
           className="bg-[#2a1a3a] rounded-lg p-4 mb-4 flex items-center hover:bg-[#3b2a4a] transition duration-300 cursor-pointer"
           onClick={handleClick(game)}
         >
-          {/* 游戏卡片内容保持不变 */}
-          {/* ... 原有 JSX 结构 ... */}
+          <div className="game-rank text-center text-xl font-bold text-gray-300 mr-4">
+            {index + 1}
+          </div>
+          <div className="w-48 h-24 mr-4 flex-shrink-0">
+            <img
+              src={game.face_img}
+              alt={game.g_name}
+              className="w-full h-full object-cover rounded-lg"
+            />
+          </div>
+          <div className="flex-1 flex flex-col justify-center">
+            <span className="text-lg mb-1">{game.g_name}</span>
+            <div className="flex flex-wrap">
+              {game.tags?.map((tag, tagIndex) => (
+                <span
+                  key={tagIndex}
+                  className="text-sm text-gray-400 bg-gray-900 bg-opacity-50 rounded px-2 py-1 mr-2 mt-1"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <p className="text-sm mt-2 text-[#ddd]">发行日期: {game.g_time}</p>
+          </div>
         </div>
       ))}
     </div>
