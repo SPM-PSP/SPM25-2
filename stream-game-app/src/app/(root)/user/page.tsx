@@ -88,7 +88,7 @@ export default function Home() {
               type="text"
               value={user?.email || ""}
               disabled
-              className="w-full p-[10px] border-none rounded-[5px] bg-white text-sm"
+              className="w-full p-[10px] border-none rounded-[5px] bg-gray-400 text-sm"
             />
           </div>
           <div className="mb-5">
